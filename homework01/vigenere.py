@@ -1,66 +1,58 @@
 def encrypt_vigenere(plaintext: str, keyword: str) -> str:
-    """
-        Encrypts plaintext using a Vigenere cipher.
 
-        >>> encrypt_vigenere("PYTHON", "A")
-        'PYTHON'
-        >>> encrypt_vigenere("python", "a")
-        'python'
-        >>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
-        'LXFOPVEFRNHR'
-        """
     ciphertext = ""
-    keyword_lower = keyword.lower()
-    while len(keyword_lower) < len(plaintext):
-        keyword_lower = keyword_lower + keyword_lower
-
-    for j in range(len((plaintext))):
-        letter = plaintext[j]
-        key = keyword_lower[j]
-        shift = ord(key) - 97
-        if letter.isupper():
-
-            ascii_code = ord(letter) + shift
-            if ascii_code >= 91:
-                ascii_code = (ascii_code - 90) + 64
-            ciphertext += chr(ascii_code)
+    s = 'abcdefghijklmnopqrstuvwxyz'
+    b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    while len(plaintext) > len(keyword): keyword += keyword
+    k=0
+    for i in plaintext:
+        if keyword[k] in s:
+            shift = s.find(keyword[k])
         else:
-            ascii_code = ord(letter) + shift
-            if ascii_code >= 123:
-                ascii_code = (ascii_code - 122) + 96
-            ciphertext += chr(ascii_code)
-
+            shift = b.find(keyword[k])
+        if i in s:
+            if s.find(i) + shift > 25:
+                l = s.find(i) + shift - 26
+            else:
+                l = s.find(i) + shift
+            ciphertext += s[l]
+        elif i in b:
+            if b.find(i) + shift > 25:
+                l = b.find(i) + shift - 26
+            else:
+                l = b.find(i) + shift
+            ciphertext += b[l]
+        else:
+            ciphertext += i
+        k+=1
     return ciphertext
 
+
 def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
-    """
-        Decrypts a ciphertext using a Vigenere cipher.
 
-        >>> decrypt_vigenere("PYTHON", "A")
-        'PYTHON'
-        >>> decrypt_vigenere("python", "a")
-        'python'
-        >>> decrypt_vigenere("LXFOPVEFRNHR", "LEMON")
-        'ATTACKATDAWN'
-        """
     plaintext = ""
-    keyword_lower = keyword.lower()
-    while len(keyword_lower) < len(ciphertext):
-        keyword_lower = keyword_lower + keyword_lower
-
-    for j in range(len((ciphertext))):
-        letter = ciphertext[j]
-        key = keyword_lower[j]
-        shift = ord(key) - 97
-        if letter.isupper():
-            ascii_code = ord(letter) - shift
-            if ascii_code <= 64:
-                ascii_code = 91 - (65 - ascii_code)
-            plaintext += chr(ascii_code)
+    s = 'abcdefghijklmnopqrstuvwxyz'
+    b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    while len(ciphertext) > len(keyword): keyword += keyword
+    k=0
+    for i in ciphertext:
+        if keyword[k] in s:
+            shift = s.find(keyword[k])
         else:
-            ascii_code = ord(letter) - shift
-            if ascii_code <= 96:
-                ascii_code = 123 - (97 - ascii_code)
-            plaintext += chr(ascii_code)
-
+            shift = b.find(keyword[k])
+        if i in s:
+            if s.find(i) - shift < 0:
+                l = 26 + s.find(i) - shift
+            else:
+                l = s.find(i) - shift
+            plaintext += s[l]
+        elif i in b:
+            if b.find(i) - shift < 0:
+                l = 26 + b.find(i) - shift
+            else:
+                l = b.find(i) - shift
+            plaintext += b[l]
+        else:
+            plaintext += i
+        k+=1
     return plaintext
